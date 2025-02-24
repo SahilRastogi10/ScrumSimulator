@@ -69,6 +69,23 @@ public class DemoPane extends JFrame implements BaseComponent {
                     }
                 });
 
+        // Backlog button
+        JButton backlogButton = new JButton("Product Backlog");
+        backlogButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.out.println("Testing");
+                    }
+                });
+
+        // Adding the backlog button.
+        myJpanel.add(
+                backlogButton,
+                new CustomConstraints(
+                        7, 1, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+
+
         myJpanel.add(
                 userStoriesButton,
                 new CustomConstraints(

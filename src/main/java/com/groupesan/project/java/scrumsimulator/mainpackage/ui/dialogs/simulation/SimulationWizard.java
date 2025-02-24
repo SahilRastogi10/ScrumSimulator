@@ -15,7 +15,6 @@ public class SimulationWizard extends Wizard<Simulation> {
     private DataModel<List<ScrumRole>> roles;
     private DataModel<List<Player>> users;
     private SimulationFactory simulationFactory;
-    //todo
 
     public SimulationWizard(WizardHandler<Simulation> handler) {
         super(handler);
@@ -48,7 +47,6 @@ public class SimulationWizard extends Wizard<Simulation> {
             simulation.addPlayer(player);
         }
 
-        simulationFactory.createNewSimulation(simulation);
-        return simulation;
+        return simulationFactory.createNewSimulation(simulation);
     }
 }

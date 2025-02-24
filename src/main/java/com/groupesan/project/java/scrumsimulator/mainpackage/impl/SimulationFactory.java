@@ -7,7 +7,6 @@ import java.util.UUID;
 public class SimulationFactory {
     private static SimulationFactory simulationFactory;
     private SimulationManager simulationManager;
-    //todo
 
     public static SimulationFactory getSimulationFactory() {
         if (simulationFactory == null) {
@@ -27,7 +26,6 @@ public class SimulationFactory {
         int sprintCount = newSimulation.getSprintCount();
         int sprintDuration = newSimulation.getSprintDuration();
         simulationManager.createSimulation(simId, simName, Integer.toString(sprintCount), Integer.toString(sprintDuration));
-        // todo
         return newSimulation;
     }
 }

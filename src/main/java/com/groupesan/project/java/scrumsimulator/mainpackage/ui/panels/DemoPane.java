@@ -75,7 +75,8 @@ public class DemoPane extends JFrame implements BaseComponent {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        System.out.println("Testing");
+                        BacklogPane backlogPane = new BacklogPane();
+                        backlogPane.setVisible(true);
                     }
                 });
 

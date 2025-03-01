@@ -41,12 +41,14 @@ public class UserStoryListPane extends JFrame implements BaseComponent {
         //                UserStoryFactory.getInstance().createNewUserStory("foo2", "bar2", 4);
         //        widgets.add(new UserStoryWidget(aUserStory));
         //        widgets.add(new UserStoryWidget(aUserStory2));
+        System.out.println("Displaying User Stories:");
+        JPanel subPanel = new JPanel();
 
         for (UserStory userStory : UserStoryStore.getInstance().getUserStories()) {
-            widgets.add(new UserStoryWidget(userStory));
+            System.out.println(userStory.getId());
+            widgets.add(new UserStoryWidget(userStory, this));
         }
 
-        JPanel subPanel = new JPanel();
         subPanel.setLayout(new GridBagLayout());
         int i = 0;
         for (UserStoryWidget widget : widgets) {
@@ -80,7 +82,7 @@ public class UserStoryListPane extends JFrame implements BaseComponent {
                                             java.awt.event.WindowEvent windowEvent) {
                                         UserStory userStory = form.getUserStoryObject();
                                         UserStoryStore.getInstance().addUserStory(userStory);
-                                        widgets.add(new UserStoryWidget(userStory));
+                                        widgets.add(new UserStoryWidget(userStory, null));
                                         int idx = widgets.size() - 1;
                                         subPanel.add(
                                                 widgets.get(idx),
@@ -101,5 +103,9 @@ public class UserStoryListPane extends JFrame implements BaseComponent {
                         0, 1, GridBagConstraints.WEST, 1.0, 0.2, GridBagConstraints.HORIZONTAL));
 
         add(myJpanel);
+
+    }
+    public void shutWindow(){
+        dispose();
     }
 }

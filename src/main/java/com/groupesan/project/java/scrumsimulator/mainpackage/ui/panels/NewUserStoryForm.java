@@ -24,22 +24,25 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
     Double[] pointsList = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,20.0};
     Double[] businessValueList = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,11.0};
 
+
     public NewUserStoryForm() {
         this.init();
     }
 
     private JTextField nameField = new JTextField();
     private JTextArea descArea = new JTextArea();
+    private JComboBox<Double> businessValueCombo = new JComboBox<>(businessValues);
     private JComboBox<Double> pointsCombo = new JComboBox<>(pointsList);
     private JComboBox<Double> businessValueCombo = new JComboBox<>(businessValueList);
 
     public void init() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle("New User Story");
-        setSize(400, 300);
+        setSize(400, 400);
 
         nameField = new JTextField();
         descArea = new JTextArea();
+        businessValueCombo = new JComboBox<>(businessValues);
         pointsCombo = new JComboBox<>(pointsList);
         businessValueCombo = new JComboBox<>(businessValueList);
 
@@ -72,15 +75,26 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
                 new CustomConstraints(
                         1, 1, GridBagConstraints.EAST, 1.0, 0.3, GridBagConstraints.BOTH));
 
+
+        JLabel businessValueLabel = new JLabel("Business Value:");
+        myJpanel.add(
+                businessValueLabel,
+                new CustomConstraints(
+                        0, 2, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(
+                businessValueCombo,
+                new CustomConstraints(
+                        1, 2, GridBagConstraints.EAST, 1.0, 0.0, GridBagConstraints.HORIZONTAL));
+
         JLabel pointsLabel = new JLabel("Points:");
         myJpanel.add(
                 pointsLabel,
                 new CustomConstraints(
-                        0, 2, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                        0, 3, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         myJpanel.add(
                 pointsCombo,
                 new CustomConstraints(
-                        1, 2, GridBagConstraints.EAST, 1.0, 0.0, GridBagConstraints.HORIZONTAL));
+                        1, 3, GridBagConstraints.EAST, 1.0, 0.0, GridBagConstraints.HORIZONTAL));
 
         JLabel businessValueLabel = new JLabel("Business Value:");
         myJpanel.add(
@@ -125,6 +139,7 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
     public UserStory getUserStoryObject() {
         String name = nameField.getText();
         String description = descArea.getText();
+        Double businessValue = (Double) businessValueCombo.getSelectedItem();
         Double points = (Double) pointsCombo.getSelectedItem();
         Double businessValue = (Double) businessValueCombo.getSelectedItem();
 

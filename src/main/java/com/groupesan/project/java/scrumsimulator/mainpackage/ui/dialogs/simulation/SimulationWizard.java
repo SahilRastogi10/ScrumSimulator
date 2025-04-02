@@ -33,9 +33,7 @@ public class SimulationWizard extends Wizard<Simulation> {
 
     protected List<WizardPage> build() {
         return List.of(
-                new GeneralPage(simulationName, sprintCount, sprintDuration),
-                new RolesPage(roles),
-                new ParticipantsPage(users, roles));
+                new GeneralPage(simulationName, sprintCount, sprintDuration));
     }
 
     @Override

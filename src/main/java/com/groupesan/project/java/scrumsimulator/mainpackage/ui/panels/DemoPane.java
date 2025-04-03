@@ -3,7 +3,6 @@ package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.Player;
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.ScrumRole;
 import com.groupesan.project.java.scrumsimulator.mainpackage.state.SimulationManager;
-import com.groupesan.project.java.scrumsimulator.mainpackage.state.SimulationStateManager;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.BaseComponent;
 import com.groupesan.project.java.scrumsimulator.mainpackage.utils.CustomConstraints;
 import javax.swing.*;
@@ -49,6 +48,20 @@ public class DemoPane extends JFrame implements BaseComponent {
         JButton simulationSwitchRoleButton = new JButton("Switch Role");
         JButton variantSimulationUIButton = new JButton("Variant Simulation UI");
         JButton sprintUIButton = new JButton("US Selection UI");
+        JButton backlogButton = new JButton("Backlog");
+//        backlogButton.addActionListener(
+//                new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        BacklogListPane form = new BacklogListPane();
+//                        form.setVisible(true);
+//                    }
+//                });
+//
+//        myJpanel.add(
+//                backlogButton,
+//                new CustomConstraints(
+//                        0, 1, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
         // Store buttons in a map for easy access
         roleButtons.put("Sprints", sprintsButton);
@@ -59,6 +72,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         roleButtons.put("Join Simulation", joinSimulationButton);
         roleButtons.put("Variant Simulation UI", variantSimulationUIButton);
         roleButtons.put("US Selection UI", sprintUIButton);
+        roleButtons.put("Product Backlog", backlogButton);
 
         // Set up action listeners for each button
         sprintsButton.addActionListener(e -> new SprintListPane().setVisible(true));
@@ -69,6 +83,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         joinSimulationButton.addActionListener(e -> new SimulationUI().setVisible(true));
         variantSimulationUIButton.addActionListener(e -> new VariantSimulationUI().setVisible(true));
         sprintUIButton.addActionListener(e -> new SprintUIPane(player).setVisible(true));
+        backlogButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {BacklogPane form = new BacklogPane();form.setVisible(true);}});
 
         // Add buttons to the panel with layout constraints
         myJpanel.add(sprintsButton, new CustomConstraints(0, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
@@ -79,6 +94,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         myJpanel.add(joinSimulationButton, new CustomConstraints(6, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(variantSimulationUIButton, new CustomConstraints(3, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(sprintUIButton, new CustomConstraints(8, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(backlogButton, new CustomConstraints(6, 1, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
         // Button to switch roles
         simulationSwitchRoleButton.addActionListener(e -> {

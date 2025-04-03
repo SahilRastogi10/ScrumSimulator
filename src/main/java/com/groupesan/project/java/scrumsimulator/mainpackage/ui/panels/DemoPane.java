@@ -3,22 +3,19 @@ package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.Player;
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.ScrumRole;
 import com.groupesan.project.java.scrumsimulator.mainpackage.state.SimulationManager;
-import com.groupesan.project.java.scrumsimulator.mainpackage.state.SimulationStateManager;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.BaseComponent;
 import com.groupesan.project.java.scrumsimulator.mainpackage.utils.CustomConstraints;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DemoPane extends JFrame implements BaseComponent {
-    private Player player = new Player("bob", new ScrumRole("demo"));
+    private final Player player = new Player("bob", new ScrumRole("demo"));
     private JLabel roleDisplayLabel;
-    private Map<String, JButton> roleButtons = new HashMap<>();
+    private final Map<String, JButton> roleButtons = new HashMap<>();
 
     public DemoPane() {
         this.init();
@@ -49,6 +46,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         JButton simulationSwitchRoleButton = new JButton("Switch Role");
         JButton variantSimulationUIButton = new JButton("Variant Simulation UI");
         JButton sprintUIButton = new JButton("US Selection UI");
+        JButton backlogButton = new JButton("Backlog");
 
         // Store buttons in a map for easy access
         roleButtons.put("Sprints", sprintsButton);
@@ -59,6 +57,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         roleButtons.put("Join Simulation", joinSimulationButton);
         roleButtons.put("Variant Simulation UI", variantSimulationUIButton);
         roleButtons.put("US Selection UI", sprintUIButton);
+        roleButtons.put("Product Backlog", backlogButton);
 
         // Set up action listeners for each button
         sprintsButton.addActionListener(e -> new SprintListPane().setVisible(true));
@@ -69,6 +68,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         joinSimulationButton.addActionListener(e -> new SimulationUI().setVisible(true));
         variantSimulationUIButton.addActionListener(e -> new VariantSimulationUI().setVisible(true));
         sprintUIButton.addActionListener(e -> new SprintUIPane(player).setVisible(true));
+        backlogButton.addActionListener(e -> {BacklogPane form = new BacklogPane();form.setVisible(true);});
 
         // Add buttons to the panel with layout constraints
         myJpanel.add(sprintsButton, new CustomConstraints(0, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
@@ -79,6 +79,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         myJpanel.add(joinSimulationButton, new CustomConstraints(6, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(variantSimulationUIButton, new CustomConstraints(3, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(sprintUIButton, new CustomConstraints(8, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(backlogButton, new CustomConstraints(6, 1, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
         // Button to switch roles
         simulationSwitchRoleButton.addActionListener(e -> {
@@ -107,12 +108,9 @@ public class DemoPane extends JFrame implements BaseComponent {
 
         JButton SprintBlockerButton = new JButton("Blocker List");
         SprintBlockerButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
-                        sprintBlockerPane.setVisible(true);
-                    }
+                e -> {
+                    SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
+                    sprintBlockerPane.setVisible(true);
                 });
 
         myJpanel.add(
@@ -129,7 +127,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         Map<String, String[]> rolePermissions = new HashMap<>();
         rolePermissions.put("Developer", new String[]{"Update User Story Status", "Join Simulation"});
         rolePermissions.put("Product Owner", new String[]{"Start Simulation", "Modify Simulation", "Add User", "US Selection UI"});
-        rolePermissions.put("Scrum Master", new String[]{"Sprints", "User Stories", "Modify Simulation", "Join Simulation"});
+        rolePermissions.put("Scrum Master", new String[]{"Sprints", "User Stories", "Modify Simulation", "Join Simulation", "Product Backlog"});
 
         // Hide all buttons initially
         roleButtons.values().forEach(button -> button.setVisible(false));

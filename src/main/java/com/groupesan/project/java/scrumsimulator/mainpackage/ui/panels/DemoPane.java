@@ -105,6 +105,22 @@ public class DemoPane extends JFrame implements BaseComponent {
         rolePanel.add(roleDisplayLabel);
         myJpanel.add(rolePanel, new CustomConstraints(1, 2, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
+        JButton SprintBlockerButton = new JButton("Blocker List");
+        SprintBlockerButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
+                        sprintBlockerPane.setVisible(true);
+                    }
+                });
+
+        myJpanel.add(
+                SprintBlockerButton,
+                new CustomConstraints(
+                        10, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+
+
         add(myJpanel);
     }
 

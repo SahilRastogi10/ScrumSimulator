@@ -9,15 +9,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DemoPane extends JFrame implements BaseComponent {
-    private Player player = new Player("bob", new ScrumRole("demo"));
+    private final Player player = new Player("bob", new ScrumRole("demo"));
     private JLabel roleDisplayLabel;
-    private Map<String, JButton> roleButtons = new HashMap<>();
+    private final Map<String, JButton> roleButtons = new HashMap<>();
 
     public DemoPane() {
         this.init();
@@ -49,19 +47,6 @@ public class DemoPane extends JFrame implements BaseComponent {
         JButton variantSimulationUIButton = new JButton("Variant Simulation UI");
         JButton sprintUIButton = new JButton("US Selection UI");
         JButton backlogButton = new JButton("Backlog");
-//        backlogButton.addActionListener(
-//                new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        BacklogListPane form = new BacklogListPane();
-//                        form.setVisible(true);
-//                    }
-//                });
-//
-//        myJpanel.add(
-//                backlogButton,
-//                new CustomConstraints(
-//                        0, 1, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
         // Store buttons in a map for easy access
         roleButtons.put("Sprints", sprintsButton);
@@ -83,7 +68,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         joinSimulationButton.addActionListener(e -> new SimulationUI().setVisible(true));
         variantSimulationUIButton.addActionListener(e -> new VariantSimulationUI().setVisible(true));
         sprintUIButton.addActionListener(e -> new SprintUIPane(player).setVisible(true));
-        backlogButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {BacklogPane form = new BacklogPane();form.setVisible(true);}});
+        backlogButton.addActionListener(e -> {BacklogPane form = new BacklogPane();form.setVisible(true);});
 
         // Add buttons to the panel with layout constraints
         myJpanel.add(sprintsButton, new CustomConstraints(0, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
@@ -123,12 +108,9 @@ public class DemoPane extends JFrame implements BaseComponent {
 
         JButton SprintBlockerButton = new JButton("Blocker List");
         SprintBlockerButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
-                        sprintBlockerPane.setVisible(true);
-                    }
+                e -> {
+                    SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
+                    sprintBlockerPane.setVisible(true);
                 });
 
         myJpanel.add(
@@ -145,7 +127,7 @@ public class DemoPane extends JFrame implements BaseComponent {
         Map<String, String[]> rolePermissions = new HashMap<>();
         rolePermissions.put("Developer", new String[]{"Update User Story Status", "Join Simulation"});
         rolePermissions.put("Product Owner", new String[]{"Start Simulation", "Modify Simulation", "Add User", "US Selection UI"});
-        rolePermissions.put("Scrum Master", new String[]{"Sprints", "User Stories", "Modify Simulation", "Join Simulation"});
+        rolePermissions.put("Scrum Master", new String[]{"Sprints", "User Stories", "Modify Simulation", "Join Simulation", "Product Backlog"});
 
         // Hide all buttons initially
         roleButtons.values().forEach(button -> button.setVisible(false));

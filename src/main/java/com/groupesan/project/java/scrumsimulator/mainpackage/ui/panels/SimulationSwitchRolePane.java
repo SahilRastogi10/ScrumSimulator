@@ -1,32 +1,27 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
 public class SimulationSwitchRolePane extends JFrame {
-
     private JRadioButton developerRadioButton;
     private JRadioButton scrumMasterRadioButton;
     private JRadioButton productOwnerRadioButton;
     private ButtonGroup roleButtonGroup;
     private JButton switchButton;
+    private JLabel currentRoleLabel;
+    private String selectedRole;
 
     public SimulationSwitchRolePane() {
         setTitle("Simulation Status");
-        setSize(400, 200);
+        setSize(400, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
+        panel.setLayout(new GridLayout(5, 1));
 
         JLabel label = new JLabel("Roles:");
         panel.add(label);
@@ -42,12 +37,14 @@ public class SimulationSwitchRolePane extends JFrame {
         panel.add(scrumMasterRadioButton);
         panel.add(productOwnerRadioButton);
 
+        currentRoleLabel = new JLabel("Current Role: None");
+        panel.add(currentRoleLabel);
+
         switchButton = new JButton("Switch Role");
         switchButton.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // Logic for join button
                         onSwitchButtonClicked();
                     }
                 });
@@ -58,15 +55,20 @@ public class SimulationSwitchRolePane extends JFrame {
     }
 
     private void onSwitchButtonClicked() {
+        selectedRole = "";
+
         if (developerRadioButton.isSelected()) {
-            JOptionPane.showMessageDialog(
-                    null, "Switched to Developer", "Role Switching", JOptionPane.PLAIN_MESSAGE);
+            selectedRole = "Developer";
         } else if (scrumMasterRadioButton.isSelected()) {
-            JOptionPane.showMessageDialog(
-                    null, "Switched to Scrum Master", "Role Switching", JOptionPane.PLAIN_MESSAGE);
+            selectedRole = "Scrum Master";
         } else if (productOwnerRadioButton.isSelected()) {
+            selectedRole = "Product Owner";
+        }
+
+        if (!selectedRole.isEmpty()) {
+            currentRoleLabel.setText("Current Role: " + selectedRole);
             JOptionPane.showMessageDialog(
-                    null, "Switched to Product Owner", "Role Switching", JOptionPane.PLAIN_MESSAGE);
+                    null, "Switched to " + selectedRole, "Role Switching", JOptionPane.PLAIN_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(
                     null,
@@ -74,8 +76,12 @@ public class SimulationSwitchRolePane extends JFrame {
                     "Role Switching Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+
         roleButtonGroup.clearSelection();
         dispose();
-        return;
+    }
+
+    public String getSelectedRole() {
+        return selectedRole;
     }
 }

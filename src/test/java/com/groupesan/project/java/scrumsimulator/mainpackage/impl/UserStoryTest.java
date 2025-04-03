@@ -15,7 +15,7 @@ public class UserStoryTest {
     public void setup() {
         myUserStory =
                 UserStoryFactory.getInstance()
-                        .createNewUserStory("predefinedUS1", "description1", 1.0);
+                        .createNewUserStory("predefinedUS1", "description1", 1.0,5.0);
     }
 
     @Test
@@ -50,6 +50,9 @@ public class UserStoryTest {
         myUserStory.doRegister();
 
         ScrumIdentifier id = myUserStory.getId();
+        double businessValue = myUserStory.getBusinessValue();
+        assertEquals(5.0,businessValue);
+        assertNotNull(id);
 
         assertNotNull(id);
     }

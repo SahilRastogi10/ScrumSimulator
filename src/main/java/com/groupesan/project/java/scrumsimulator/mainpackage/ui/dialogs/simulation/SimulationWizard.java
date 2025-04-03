@@ -1,6 +1,7 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.ui.dialogs.simulation;
 
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.*;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.SimulationFactory;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.utils.DataModel;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.Wizard;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.WizardHandler;
@@ -10,37 +11,40 @@ import java.util.List;
 public class SimulationWizard extends Wizard<Simulation> {
     private DataModel<String> simulationName;
     private DataModel<Object> sprintCount;
+    private DataModel<Object> sprintDuration;
     private DataModel<List<ScrumRole>> roles;
     private DataModel<List<Player>> users;
+    private SimulationFactory simulationFactory;
 
     public SimulationWizard(WizardHandler<Simulation> handler) {
         super(handler);
         setTitle("New Simulation");
+        simulationFactory = SimulationFactory.getSimulationFactory();
     }
 
     @Override
     protected void initDataModels() {
         this.simulationName = new DataModel<>("New Simulation");
         this.sprintCount = new DataModel<>(1);
+        this.sprintDuration = new DataModel<>(5);
         this.roles = new DataModel<>(new ArrayList<>());
         this.users = new DataModel<>(new ArrayList<>());
     }
 
     protected List<WizardPage> build() {
         return List.of(
-                new GeneralPage(simulationName, sprintCount),
-                new RolesPage(roles),
-                new ParticipantsPage(users, roles));
+                new GeneralPage(simulationName, sprintCount, sprintDuration));
     }
 
     @Override
     protected Simulation process() {
         Simulation simulation =
-                new Simulation(simulationName.getData(), null, (Integer) sprintCount.getData());
+                new Simulation(simulationName.getData(), null, (Integer) sprintCount.getData(), (Integer) sprintDuration.getData());
         for (Player player : users.getData()) {
             player.doRegister();
             simulation.addPlayer(player);
         }
-        return simulation;
+
+        return simulationFactory.createNewSimulation(simulation);
     }
 }

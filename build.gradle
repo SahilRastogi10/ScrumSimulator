@@ -97,7 +97,7 @@ spotbugsMain{
     }
 }
 spotbugs {
-    toolVersion = '4.8.0'
+    toolVersion = '4.8.3'
     ignoreFailures = false
     showProgress = true
     effort = 'max'

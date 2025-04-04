@@ -1,47 +1,34 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
-
-import com.groupesan.project.java.scrumsimulator.mainpackage.impl.UserStory;
-import com.groupesan.project.java.scrumsimulator.mainpackage.impl.UserStoryFactory;
-import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.BaseComponent;
-import com.groupesan.project.java.scrumsimulator.mainpackage.utils.CustomConstraints;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.Backlog;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.BacklogFactory;
+import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.BaseComponent;
+import com.groupesan.project.java.scrumsimulator.mainpackage.utils.CustomConstraints;
 
-public class NewUserStoryForm extends JFrame implements BaseComponent {
 
-    Double[] pointsList = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,20.0};
-    Double[] businessValueList = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,11.0};;
-
-    public NewUserStoryForm() {
+public class NewBacklogForm extends JFrame implements BaseComponent {
+    Double[] pointsList = {1.0, 2.0, 3.0, 5.0, 8.0, 11.0, 19.0, 30.0, 49.0};
+    public NewBacklogForm() {
         this.init();
     }
 
     private JTextField nameField = new JTextField();
     private JTextArea descArea = new JTextArea();
     private JComboBox<Double> pointsCombo = new JComboBox<>(pointsList);
-    private JComboBox<Double> businessValueCombo = new JComboBox<>(businessValueList);
+    private JComboBox<Double> businessValueCombo = new JComboBox<>(pointsList);
 
     public void init() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle("New User Story");
+        setTitle("New user story");
         setSize(400, 300);
 
         nameField = new JTextField();
         descArea = new JTextArea();
         pointsCombo = new JComboBox<>(pointsList);
-        businessValueCombo = new JComboBox<>(businessValueList);
 
         GridBagLayout myGridbagLayout = new GridBagLayout();
         JPanel myJpanel = new JPanel();
@@ -122,18 +109,20 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
         add(myJpanel);
     }
 
-    public UserStory getUserStoryObject() {
+    public Backlog getBacklogObject() {
         String name = nameField.getText();
         String description = descArea.getText();
         Double points = (Double) pointsCombo.getSelectedItem();
         Double businessValue = (Double) businessValueCombo.getSelectedItem();
 
-        UserStoryFactory userStoryFactory = UserStoryFactory.getInstance();
+        BacklogFactory backlogFactory = BacklogFactory.getInstance();
 
-        UserStory userStory = userStoryFactory.createNewUserStory(name, description, points, businessValue);
+        Backlog backlog = backlogFactory.createNewBacklog(name, description, points,businessValue);
 
-        userStory.doRegister();
+        backlog.doRegister();
 
-        return userStory;
+        System.out.println(backlog);
+
+        return backlog;
     }
 }

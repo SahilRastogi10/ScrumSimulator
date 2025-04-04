@@ -17,6 +17,8 @@ public class UserStory extends ScrumObject {
 
     private double pointValue;
 
+    private double businessValue;
+
     private UserStoryState state;
 
     private Player owner;
@@ -29,10 +31,11 @@ public class UserStory extends ScrumObject {
      * @param name the name for the user story
      * @param pointValue the point value for the story as a way of estimating required effort.
      */
-    public UserStory(String name, double pointValue) {
+    public UserStory(String name, double pointValue, double businessValue) {
         this.name = name;
         this.description = "";
         this.pointValue = pointValue;
+        this.businessValue = businessValue;
         this.state = new UserStoryUnselectedState(this);
     }
 
@@ -44,12 +47,17 @@ public class UserStory extends ScrumObject {
      *     requirements.
      * @param pointValue the point value for the story as a way of estimating required effort.
      */
-    public UserStory(String name, String description, double pointValue) {
+    public UserStory(String name, String description, double pointValue, double businessValue) {
         this.name = name;
         this.description = description;
         this.pointValue = pointValue;
+        this.businessValue = businessValue;
         this.state = new UserStoryUnselectedState(this);
     }
+
+
+
+
 
     protected void register() {
         this.id = new UserStoryIdentifier(ScrumIdentifierStoreSingleton.get().getNextId());
@@ -121,6 +129,23 @@ public class UserStory extends ScrumObject {
      */
     public void setPointValue(double pointValue) {
         this.pointValue = pointValue;
+    }
+
+    /**
+     * Get the business value of this User Story
+     *
+     * @return the business point value of this UserStory as a double
+     */
+    public double getBusinessValue() {
+        return businessValue;
+    }
+
+    /**
+     * Set the business point value of the User Story to the specified value
+     * @param businessValue the business point value as a double. Usually an element of the fibonacci sequence.
+     */
+    public void setBusinessValue(double businessValue) {
+        this.businessValue = businessValue;
     }
 
     /**

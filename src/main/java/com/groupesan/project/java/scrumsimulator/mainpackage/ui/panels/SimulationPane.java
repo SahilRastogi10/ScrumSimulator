@@ -1,107 +1,100 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 
-import com.groupesan.project.java.scrumsimulator.mainpackage.impl.AddUser;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import com.groupesan.project.java.scrumsimulator.mainpackage.core.Player;
+import com.groupesan.project.java.scrumsimulator.mainpackage.core.User;
+import com.groupesan.project.java.scrumsimulator.mainpackage.core.ScrumRole;
+import com.groupesan.project.java.scrumsimulator.mainpackage.state.SimulationStateManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
-/**
- * SimulationPane is a part of the UI in the scrum simulator.
- *
- * <p>Todo: logic/controller portions of original FeedbackPanel.java
- *
- * @version 0.1
- * @since 2023-11-8
- */
 public class SimulationPane extends JFrame {
-    private JButton joinButton;
-    private JTextField usernameField;
-    private JRadioButton playerRadioButton;
-    private JRadioButton teacherRadioButton;
-    private ButtonGroup typeButtonGroup;
-    private JComboBox<String> roleComboBox;
-
     private static final List<String> allowedRoleNames =
-            Arrays.asList("pig", "chicken", "product owner", "scrum master");
+            Arrays.asList("Developer", "Scrum Master", "Product Owner");
 
-    /** The simulation Pane for adding new users. */
     public SimulationPane() {
-        setTitle("Simulation Status");
-        setSize(400, 200);
+        setTitle("Add New User");
+        setSize(400, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2));
-
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameField = new JTextField(20);
-        panel.add(usernameLabel);
-        panel.add(usernameField);
-
-        JLabel typeLabel = new JLabel("Type:");
-        panel.add(typeLabel);
-
-        typeButtonGroup = new ButtonGroup();
-        playerRadioButton = new JRadioButton("Player");
-        teacherRadioButton = new JRadioButton("Teacher");
-        typeButtonGroup.add(playerRadioButton);
-        typeButtonGroup.add(teacherRadioButton);
-
-        panel.add(playerRadioButton);
-        panel.add(new JLabel(""));
-        panel.add(teacherRadioButton);
-
-        JLabel roleNameLabel = new JLabel("Role Name:");
-        roleComboBox = new JComboBox<>(allowedRoleNames.toArray(new String[0]));
-        panel.add(roleNameLabel);
-        panel.add(roleComboBox);
-
-        joinButton = new JButton("Join Simulation");
-        joinButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Logic for join button
-                        onJoinButtonClicked();
-                    }
-                });
-
-        setLayout(new BorderLayout());
-        add(joinButton, BorderLayout.SOUTH);
-        add(panel);
+        initComponents();
     }
 
-    private void onJoinButtonClicked() {
-        String username = usernameField.getText();
-        String type = playerRadioButton.isSelected() ? "player" : "teacher";
-        String roleName = roleComboBox.getSelectedItem().toString();
+    private void initComponents() {
+        JPanel mainPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    null, "Username cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        // Username field
+        mainPanel.add(new JLabel("Username:"));
+        JTextField usernameField = new JTextField();
+        mainPanel.add(usernameField);
 
-        AddUser.addUser(username, type, roleName);
-        clearFields();
-    }
+        // User type
+        mainPanel.add(new JLabel("User Type:"));
+        JPanel typePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        ButtonGroup typeGroup = new ButtonGroup();
+        JRadioButton playerButton = new JRadioButton("Player", true);
+        JRadioButton teacherButton = new JRadioButton("Teacher");
+        typeGroup.add(playerButton);
+        typeGroup.add(teacherButton);
+        typePanel.add(playerButton);
+        typePanel.add(teacherButton);
+        mainPanel.add(typePanel);
+        mainPanel.add(new JLabel()); // Empty cell for layout
 
-    private void clearFields() {
-        usernameField.setText("");
-        typeButtonGroup.clearSelection();
-        roleComboBox.setSelectedIndex(0);
+        // Role selection
+        mainPanel.add(new JLabel("Role:"));
+        JComboBox<String> roleCombo = new JComboBox<>(allowedRoleNames.toArray(new String[0]));
+        mainPanel.add(roleCombo);
+
+        // Buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton addButton = new JButton("Add User");
+        JButton cancelButton = new JButton("Cancel");
+
+        addButton.addActionListener(e -> {
+            String username = usernameField.getText().trim();
+            String role = (String) roleCombo.getSelectedItem();
+            boolean isPlayer = playerButton.isSelected();
+
+            if (username.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Username cannot be empty",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                User newUser = isPlayer ?
+                        new Player(username, new ScrumRole(role)) :
+                        new User(username, new ScrumRole(role));
+                newUser.register();
+
+                boolean success = SimulationStateManager.addUserToCurrentSimulation(newUser);
+
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "User added successfully!");
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Failed to add user. User may already exist or simulation not running.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Error adding user: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cancelButton.addActionListener(e -> dispose());
+
+        buttonPanel.add(addButton);
+        buttonPanel.add(cancelButton);
+
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
 }

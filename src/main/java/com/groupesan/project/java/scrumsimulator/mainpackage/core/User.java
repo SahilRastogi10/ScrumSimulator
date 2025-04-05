@@ -46,6 +46,11 @@ public class User extends ScrumObject {
         return (UserIdentifier) id;
     }
 
+    public boolean isRegistered() {
+        return id != null;
+    }
+
+    @Override
     public String toString() {
         if (isRegistered()) {
             return this.getId().toString();

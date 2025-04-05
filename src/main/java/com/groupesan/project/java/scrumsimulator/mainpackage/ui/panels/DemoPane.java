@@ -3,6 +3,7 @@ package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.Player;
 import com.groupesan.project.java.scrumsimulator.mainpackage.core.ScrumRole;
 import com.groupesan.project.java.scrumsimulator.mainpackage.state.SimulationManager;
+import com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels.probability.ProbabilityConfigPane;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.BaseComponent;
 import com.groupesan.project.java.scrumsimulator.mainpackage.utils.CustomConstraints;
 import javax.swing.*;
@@ -22,10 +23,6 @@ public class DemoPane extends JFrame implements BaseComponent {
         player.doRegister();
     }
 
-    /**
-     * Initialization of Demo Pane. Demonstrates creation of User stories, Sprints, and Simulation
-     * start.
-     */
     public void init() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Demo");
@@ -41,45 +38,60 @@ public class DemoPane extends JFrame implements BaseComponent {
         JButton userStoriesButton = new JButton("User Stories");
         JButton updateStoryStatusButton = new JButton("Update User Story Status");
         JButton simulationButton = new JButton("Add User");
+        JButton usersButton = new JButton("Users");
         JButton modifySimulationButton = new JButton("Modify Simulation");
         JButton joinSimulationButton = new JButton("Join Simulation");
         JButton simulationSwitchRoleButton = new JButton("Switch Role");
         JButton variantSimulationUIButton = new JButton("Variant Simulation UI");
         JButton sprintUIButton = new JButton("US Selection UI");
         JButton backlogButton = new JButton("Backlog");
+        JButton probabilityConfigButton = new JButton("Probability Config");
+        JButton sprintBlockerButton = new JButton("Blocker List");
 
         // Store buttons in a map for easy access
         roleButtons.put("Sprints", sprintsButton);
         roleButtons.put("User Stories", userStoriesButton);
         roleButtons.put("Update User Story Status", updateStoryStatusButton);
         roleButtons.put("Add User", simulationButton);
+        roleButtons.put("Users", usersButton);
         roleButtons.put("Modify Simulation", modifySimulationButton);
         roleButtons.put("Join Simulation", joinSimulationButton);
         roleButtons.put("Variant Simulation UI", variantSimulationUIButton);
         roleButtons.put("US Selection UI", sprintUIButton);
         roleButtons.put("Product Backlog", backlogButton);
+        roleButtons.put("Probability Config", probabilityConfigButton);
+        roleButtons.put("Blocker List", sprintBlockerButton);
 
         // Set up action listeners for each button
         sprintsButton.addActionListener(e -> new SprintListPane().setVisible(true));
         userStoriesButton.addActionListener(e -> new UserStoryListPane().setVisible(true));
         updateStoryStatusButton.addActionListener(e -> new UpdateUserStoryPanel().setVisible(true));
         simulationButton.addActionListener(e -> new SimulationPane().setVisible(true));
+        usersButton.addActionListener(e -> new UserListPane().setVisible(true));
         modifySimulationButton.addActionListener(e -> new ModifySimulationPane(new SimulationManager()).setVisible(true));
         joinSimulationButton.addActionListener(e -> new SimulationUI().setVisible(true));
         variantSimulationUIButton.addActionListener(e -> new VariantSimulationUI().setVisible(true));
         sprintUIButton.addActionListener(e -> new SprintUIPane(player).setVisible(true));
         backlogButton.addActionListener(e -> {BacklogPane form = new BacklogPane();form.setVisible(true);});
+        probabilityConfigButton.addActionListener(e -> new ProbabilityConfigPane().setVisible(true));
+        sprintBlockerButton.addActionListener(e -> {
+            SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
+            sprintBlockerPane.setVisible(true);
+        });
 
         // Add buttons to the panel with layout constraints
         myJpanel.add(sprintsButton, new CustomConstraints(0, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(userStoriesButton, new CustomConstraints(1, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(updateStoryStatusButton, new CustomConstraints(3, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(simulationButton, new CustomConstraints(7, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(usersButton, new CustomConstraints(8, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(modifySimulationButton, new CustomConstraints(5, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(joinSimulationButton, new CustomConstraints(6, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(variantSimulationUIButton, new CustomConstraints(3, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
-        myJpanel.add(sprintUIButton, new CustomConstraints(8, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(sprintUIButton, new CustomConstraints(9, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
         myJpanel.add(backlogButton, new CustomConstraints(6, 1, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(probabilityConfigButton, new CustomConstraints(4, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
+        myJpanel.add(sprintBlockerButton, new CustomConstraints(10, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
         // Button to switch roles
         simulationSwitchRoleButton.addActionListener(e -> {
@@ -106,19 +118,6 @@ public class DemoPane extends JFrame implements BaseComponent {
         rolePanel.add(roleDisplayLabel);
         myJpanel.add(rolePanel, new CustomConstraints(1, 2, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
 
-        JButton SprintBlockerButton = new JButton("Blocker List");
-        SprintBlockerButton.addActionListener(
-                e -> {
-                    SprintBlockerPane sprintBlockerPane = new SprintBlockerPane();
-                    sprintBlockerPane.setVisible(true);
-                });
-
-        myJpanel.add(
-                SprintBlockerButton,
-                new CustomConstraints(
-                        10, 0, GridBagConstraints.WEST, 1.0, 1.0, GridBagConstraints.HORIZONTAL));
-
-
         add(myJpanel);
     }
 
@@ -127,7 +126,9 @@ public class DemoPane extends JFrame implements BaseComponent {
         Map<String, String[]> rolePermissions = new HashMap<>();
         rolePermissions.put("Developer", new String[]{"Update User Story Status", "Join Simulation"});
         rolePermissions.put("Product Owner", new String[]{"Start Simulation", "Modify Simulation", "Add User", "US Selection UI"});
-        rolePermissions.put("Scrum Master", new String[]{"Sprints", "User Stories", "Modify Simulation", "Join Simulation", "Product Backlog"});
+        rolePermissions.put("Scrum Master", new String[]{"Sprints", "User Stories","Update User Story Status",
+                "Probability Config", "Modify Simulation", "Join Simulation", "Add User", "US Selection UI",
+                "Product Backlog", "Blocker List", "Users"});
 
         // Hide all buttons initially
         roleButtons.values().forEach(button -> button.setVisible(false));

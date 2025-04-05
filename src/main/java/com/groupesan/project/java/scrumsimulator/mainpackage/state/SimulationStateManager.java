@@ -1,5 +1,7 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.state;
 
+import com.groupesan.project.java.scrumsimulator.mainpackage.core.Player;
+import com.groupesan.project.java.scrumsimulator.mainpackage.core.User;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,24 +12,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-/**
- * SimulationStateManager manages the state of a simulation, including whether it is running and
- * saving its ID.
- */
 public class SimulationStateManager {
     private boolean running;
     private static final String JSON_FILE_PATH = "src/main/resources/simulation.JSON";
 
-    /** Simulation State manager. Not running by default. */
     public SimulationStateManager() {
         this.running = false;
     }
 
-    /**
-     * Returns the current state of the simulation.
-     *
-     * @return boolean running
-     */
     public boolean isRunning() {
         return running;
     }
@@ -36,25 +28,14 @@ public class SimulationStateManager {
         this.running = running;
     }
 
-    /** Method to set the simulation state to running. */
     public void startSimulation() {
         setRunning(true);
-        // Add other logic for starting the simulation
     }
 
-    /** Method to set the simulation state to not running. */
     public void stopSimulation() {
         setRunning(false);
-        // Add other logic for stopping the simulation
     }
 
-    /**
-     * Saves the details of a new simulation to a JSON file.
-     *
-     * @param simId The ID of the simulation.
-     * @param simName The name of the simulation.
-     * @param numberOfSprints The number of sprints in the simulation.
-     */
     public static void saveNewSimulationDetails(
             String simId, String simName, String numberOfSprints, String sprintDuration) {
         JSONObject simulationData = getSimulationData();
@@ -82,6 +63,49 @@ public class SimulationStateManager {
         updateSimulationData(simulationData);
     }
 
+    public static boolean addUserToCurrentSimulation(User user) {
+        JSONObject simulationData = getSimulationData();
+        if (simulationData == null) return false;
+
+        JSONArray simulations = simulationData.optJSONArray("Simulations");
+        if (simulations == null || simulations.length() == 0) return false;
+
+        JSONObject currentSim = simulations.getJSONObject(simulations.length() - 1);
+        JSONArray users = currentSim.optJSONArray("Users");
+        if (users == null) {
+            users = new JSONArray();
+            currentSim.put("Users", users);
+        }
+
+        for (int i = 0; i < users.length(); i++) {
+            JSONObject existingUser = users.getJSONObject(i);
+            if (existingUser.getString("name").equalsIgnoreCase(user.getName())) {
+                return false;
+            }
+        }
+
+        JSONObject userJson = new JSONObject();
+        userJson.put("name", user.getName());
+        userJson.put("role", user.getRole().toString());
+        userJson.put("id", user.getId().toString());
+        userJson.put("type", user instanceof Player ? "Player" : "Teacher");
+        users.put(userJson);
+
+        updateSimulationData(simulationData);
+        return true;
+    }
+
+    public static JSONArray getCurrentSimulationUsers() {
+        JSONObject simulationData = getSimulationData();
+        if (simulationData == null) return new JSONArray();
+
+        JSONArray simulations = simulationData.optJSONArray("Simulations");
+        if (simulations == null || simulations.length() == 0) return new JSONArray();
+
+        JSONObject currentSim = simulations.getJSONObject(simulations.length() - 1);
+        return currentSim.optJSONArray("Users");
+    }
+
     private static JSONObject getSimulationData() {
         try (FileInputStream fis = new FileInputStream(JSON_FILE_PATH)) {
             JSONTokener tokener = new JSONTokener(fis);
@@ -94,8 +118,8 @@ public class SimulationStateManager {
 
     private static void updateSimulationData(JSONObject updatedData) {
         try (OutputStreamWriter writer =
-                new OutputStreamWriter(
-                        new FileOutputStream(JSON_FILE_PATH), StandardCharsets.UTF_8)) {
+                     new OutputStreamWriter(
+                             new FileOutputStream(JSON_FILE_PATH), StandardCharsets.UTF_8)) {
             writer.write(updatedData.toString(4));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error writing to simulation.JSON");

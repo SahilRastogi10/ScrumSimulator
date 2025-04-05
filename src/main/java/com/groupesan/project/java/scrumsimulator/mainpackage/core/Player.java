@@ -1,7 +1,6 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.core;
 
 public class Player extends User {
-
     private Simulation simulation;
 
     public Player(String username, ScrumRole scrumRole) {
@@ -16,6 +15,7 @@ public class Player extends User {
         this.simulation = simulation;
     }
 
+    @Override
     public String toString() {
         return "[Player] " + super.toString();
     }

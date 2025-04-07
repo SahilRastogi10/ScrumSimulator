@@ -10,7 +10,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -44,13 +43,19 @@ public class EditUserStoryForm extends JFrame implements BaseComponent {
     public void init() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle("Edit User Story " + userStory.getId().toString());
-        setSize(400, 300);
-
+        setSize(400, 300); // Set the size of the window
+        setLocationRelativeTo(null); // Center the window on the screen
+        if (userStory == null || userStory.getId() == null) {
+            JOptionPane.showMessageDialog(this, "Invalid User Story to edit.");
+            dispose();
+            return;
+        }
+        // Initialize the components with the user story's data   
         nameField = new JTextField(userStory.getName());
         descArea = new JTextArea(userStory.getDescription());
         pointsCombo = new JComboBox<>(pointsList);
         pointsCombo.setSelectedItem(userStory.getPointValue());
-        businessValueCombo = new JComboBox<>(pointsList);
+        businessValueCombo = new JComboBox<>(businessValueList);
         businessValueCombo.setSelectedItem(userStory.getBusinessValue());
 
         GridBagLayout myGridbagLayout = new GridBagLayout();
@@ -93,21 +98,18 @@ public class EditUserStoryForm extends JFrame implements BaseComponent {
                         1, 2, GridBagConstraints.EAST, 1.0, 0.0, GridBagConstraints.HORIZONTAL));
 
         JButton cancelButton = new JButton("Cancel");
-
-        cancelButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+        cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                         dispose();
-                    }
-                });
+                }
+        });
 
         JButton submitButton = new JButton("Submit");
 
-        submitButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+        submitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                         String name = nameField.getText();
                         String description = descArea.getText();
                         Double points = (Double) pointsCombo.getSelectedItem();
@@ -117,22 +119,22 @@ public class EditUserStoryForm extends JFrame implements BaseComponent {
                         userStory.setDescription(description);
                         userStory.setPointValue(points);
                         userStory.setBusinessValue(businessValue);
+                        JOptionPane.showMessageDialog(EditUserStoryForm.this, "User Story updated successfully!");
                         dispose();
-                    }
-                });
+                        parentPanel.refreshUserStoryList();
+                }
+        });
 
         JButton deleteButton = new JButton("Delete");
 
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 int confirmation = JOptionPane.showConfirmDialog(
-                        EditUserStoryForm.this,
-                        "Are you sure you want to delete this User Story?",
-                        "Delete Confirmation",
-                        JOptionPane.YES_NO_OPTION);
-
+                    EditUserStoryForm.this,
+                    "Are you sure you want to delete this User Story?",
+                    "Delete Confirmation",
+                    JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
                     UserStoryStore.getInstance().deleteUserStory(userStory);
                     dispose();
@@ -143,18 +145,30 @@ public class EditUserStoryForm extends JFrame implements BaseComponent {
                 }
             }
         });
+        JButton editButton = new JButton("Edit");
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String description = descArea.getText();
+                Double points = (Double) pointsCombo.getSelectedItem();
+                Double businessValue = (Double) businessValueCombo.getSelectedItem();
 
+                userStory.setName(name);
+                userStory.setDescription(description);
+                userStory.setPointValue(points);
+                userStory.setBusinessValue(businessValue);
 
-        myJpanel.add(
-                cancelButton,
-                new CustomConstraints(0, 3, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        myJpanel.add(
-                submitButton,
-                new CustomConstraints(1, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                JOptionPane.showMessageDialog(EditUserStoryForm.this, "User Story updated successfully!");
+                dispose();
+    }
+});     
+
+        myJpanel.add(cancelButton, new CustomConstraints(0, 3, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        myJpanel.add(submitButton, new CustomConstraints(1, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
         //JButton deleteButton = new JButton("Delete");
-        myJpanel.add(
-                deleteButton,
-                new CustomConstraints(2, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        myJpanel.add(deleteButton, new CustomConstraints(2, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        myJpanel.add(editButton, new CustomConstraints(3, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
         add(myJpanel);
     }
 }

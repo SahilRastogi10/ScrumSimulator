@@ -2,6 +2,8 @@ package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 
 import com.groupesan.project.java.scrumsimulator.mainpackage.impl.BlockerStore;
 import com.groupesan.project.java.scrumsimulator.mainpackage.impl.Blockers;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.UserStory;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.SpikeStory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,10 +16,9 @@ public class SprintBlockerPane extends JFrame {
     public SprintBlockerPane() {
         setTitle("Blockers List");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(600, 350);
+        setSize(700, 350);
 
-
-        String[] columnNames = {"ID", "Severity", "Impact", "Description"};
+        String[] columnNames = {"ID", "Severity", "Impact", "Description", "User Story", "Spike Story ID"};
         blockerList = BlockerStore.getInstance().getBlockers();
 
         if (blockerList == null || blockerList.isEmpty()) {
@@ -31,8 +32,6 @@ public class SprintBlockerPane extends JFrame {
         JScrollPane scrollPane = new JScrollPane(blockerTable);
         blockerTable.setFillsViewportHeight(true);
 
-
-
         JButton newBlockerButton = new JButton("Add a new blocker");
         newBlockerButton.addActionListener(e -> {
             AddBlockerDialog dialog = new AddBlockerDialog(this);
@@ -42,15 +41,17 @@ public class SprintBlockerPane extends JFrame {
                 String severityStr = dialog.getSeverity();
                 String impactStr = dialog.getImpact();
                 String description = dialog.getDescription();
+                UserStory selectedUserStory = dialog.getSelectedUserStory(); // Get selected user story
+                SpikeStory selectedSpikeStory = dialog.getSelectedSpikeStory(); // Get selected SpikeStory
 
                 try {
                     double severity = Double.parseDouble(severityStr);
                     double impact = Double.parseDouble(impactStr);
 
-                    String id = java.util.UUID.randomUUID().toString();
+                    String id = java.util.UUID.randomUUID().toString(); // Generate ID as String
 
-                    Blockers newBlocker = new Blockers(id, description, severity, impact);
-
+                    // Create Blocker with UserStory and SpikeStory
+                    Blockers newBlocker = new Blockers(description, severity, impact, selectedUserStory, selectedSpikeStory);
                     BlockerStore.getInstance().addBlocker(newBlocker);
 
                     refreshTable();
@@ -59,6 +60,7 @@ public class SprintBlockerPane extends JFrame {
                 }
             }
         });
+
         JButton blockerSolutionsButton = new JButton("Blocker Solutions");
         blockerSolutionsButton.addActionListener(e -> {
             int selectedRow = blockerTable.getSelectedRow();
@@ -75,21 +77,28 @@ public class SprintBlockerPane extends JFrame {
         buttonPanel.add(blockerSolutionsButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
-
-        buttonPanel.add(newBlockerButton);
-
         add(scrollPane, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private Object[][] getBlockerData() {
-        Object[][] data = new Object[blockerList.size()][4];
+        Object[][] data = new Object[blockerList.size()][6];
         for (int i = 0; i < blockerList.size(); i++) {
             Blockers blocker = blockerList.get(i);
-            data[i][0] = String.valueOf(i + 1);
+            UserStory userStory = blocker.getAssociatedUserStory();
+            SpikeStory spikeStory = blocker.getAssociatedSpikeStory();
+
+            String userStoryName = (userStory != null) ? userStory.getName() : "None";
+            String spikeId = (spikeStory != null &&
+                    spikeStory.getLinkedUserStory() != null &&
+                    spikeStory.getLinkedUserStory().equals(userStory))
+                    ? spikeStory.getId().toString() : "None";  // Ensure spike ID is a String
+
+            data[i][0] = blocker.getId();  // Ensure the ID is displayed correctly
             data[i][1] = blocker.getSeverity();
             data[i][2] = blocker.getImpact();
             data[i][3] = blocker.getDescription();
+            data[i][4] = userStoryName;
+            data[i][5] = spikeId; // Display SpikeStory ID
         }
         return data;
     }
@@ -98,17 +107,7 @@ public class SprintBlockerPane extends JFrame {
         blockerList = BlockerStore.getInstance().getBlockers();
         blockerTable.setModel(new javax.swing.table.DefaultTableModel(
                 getBlockerData(),
-                new String[]{"ID", "Severity", "Impact", "Description"}
+                new String[]{"ID", "Severity", "Impact", "Description", "User Story", "Spike Story ID"}
         ));
-    }
-    private void openBlockerDetailsWindow(int row) {
-        if (row < blockerList.size()) {
-            Blockers selectedBlocker = blockerList.get(row);
-
-            BlockerDetailsWindow detailsWindow = new BlockerDetailsWindow(selectedBlocker);
-            detailsWindow.setVisible(true);
-        } else {
-            System.out.println("Invalid row selected: " + row);
-        }
     }
 }

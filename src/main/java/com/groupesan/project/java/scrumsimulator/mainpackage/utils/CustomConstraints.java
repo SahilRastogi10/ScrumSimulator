@@ -12,8 +12,7 @@ public class CustomConstraints extends GridBagConstraints {
         this.insets = new Insets(5, 5, 5, 5);
     }
 
-    public CustomConstraints(
-            int gridx, int gridy, int anchor, double weightx, double weighty, int fill) {
+    public CustomConstraints(int gridx, int gridy, int anchor, double weightx, double weighty, int fill) {
         this.gridx = gridx;
         this.gridy = gridy;
         this.anchor = anchor;
@@ -21,5 +20,9 @@ public class CustomConstraints extends GridBagConstraints {
         this.weighty = weighty;
         this.fill = fill;
         this.insets = new Insets(5, 5, 5, 5);
+    }
+
+    public static CustomConstraints with(int x, int y) {
+        return new CustomConstraints(x, y, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
     }
 }

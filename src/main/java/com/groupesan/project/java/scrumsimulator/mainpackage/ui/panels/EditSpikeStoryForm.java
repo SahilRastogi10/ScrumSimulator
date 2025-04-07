@@ -1,33 +1,29 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 
-import com.groupesan.project.java.scrumsimulator.mainpackage.impl.UserStory;
-import com.groupesan.project.java.scrumsimulator.mainpackage.impl.UserStoryFactory;
-import com.groupesan.project.java.scrumsimulator.mainpackage.state.UserStoryStateManager;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.SpikeStory;
+import com.groupesan.project.java.scrumsimulator.mainpackage.impl.SpikeStoryStore;
 import com.groupesan.project.java.scrumsimulator.mainpackage.ui.widgets.BaseComponent;
 import com.groupesan.project.java.scrumsimulator.mainpackage.utils.CustomConstraints;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
-public class NewUserStoryForm extends JFrame implements BaseComponent {
+public class EditSpikeStoryForm extends JFrame implements BaseComponent {
 
     Double[] pointsList = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,20.0};
     Double[] businessValueList = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0,11.0};
+    SpikeStoryListPane parentPanel;
 
-    public NewUserStoryForm() {
+    public EditSpikeStoryForm(SpikeStory spikeStory, SpikeStoryListPane parentPanel) {
+        this.spikeStory = spikeStory;
+        this.parentPanel = parentPanel;
         this.init();
     }
+
+    private SpikeStory spikeStory;
 
     private JTextField nameField = new JTextField();
     private JTextArea descArea = new JTextArea();
@@ -36,14 +32,15 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
 
     public void init() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle("New User Story");
+        setTitle("Edit Spike Story " + spikeStory.getId().toString());
         setSize(400, 300);
-        setLocationRelativeTo(businessValueCombo); // Center the window on the screen
 
-        nameField = new JTextField();
-        descArea = new JTextArea();
+        nameField = new JTextField(spikeStory.getName());
+        descArea = new JTextArea(spikeStory.getDescription());
         pointsCombo = new JComboBox<>(pointsList);
-        businessValueCombo = new JComboBox<>(businessValueList);
+        pointsCombo.setSelectedItem(spikeStory.getPointValue());
+        businessValueCombo = new JComboBox<>(pointsList);
+        businessValueCombo.setSelectedItem(spikeStory.getBusinessValue());
 
         GridBagLayout myGridbagLayout = new GridBagLayout();
         JPanel myJpanel = new JPanel();
@@ -84,16 +81,6 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
                 new CustomConstraints(
                         1, 2, GridBagConstraints.EAST, 1.0, 0.0, GridBagConstraints.HORIZONTAL));
 
-        JLabel businessValueLabel = new JLabel("Business Value:");
-        myJpanel.add(
-                businessValueLabel,
-                new CustomConstraints(
-                        0, 3, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        myJpanel.add(
-                businessValueCombo,
-                new CustomConstraints(
-                        1, 3, GridBagConstraints.EAST, 1.0, 0.0, GridBagConstraints.HORIZONTAL));
-
         JButton cancelButton = new JButton("Cancel");
 
         cancelButton.addActionListener(
@@ -110,35 +97,52 @@ public class NewUserStoryForm extends JFrame implements BaseComponent {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        String name = nameField.getText();
+                        String description = descArea.getText();
+                        Double points = (Double) pointsCombo.getSelectedItem();
+                        Double businessValue = (Double) businessValueCombo.getSelectedItem();
+
+                        spikeStory.setName(name);
+                        spikeStory.setDescription(description);
+                        spikeStory.setPointValue(points);
+                        spikeStory.setBusinessValue(businessValue);
                         dispose();
                     }
                 });
 
+        JButton deleteButton = new JButton("Delete");
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int confirmation = JOptionPane.showConfirmDialog(
+                        EditSpikeStoryForm.this,
+                        "Are you sure you want to delete this Spike Story?",
+                        "Delete Confirmation",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    SpikeStoryStore.getInstance().deleteSpikeStory(spikeStory);
+                    dispose();
+                    parentPanel.shutWindow();
+                    JOptionPane.showMessageDialog(EditSpikeStoryForm.this, "Spike Story deleted successfully!");
+
+
+                }
+            }
+        });
+
         myJpanel.add(
                 cancelButton,
-                new CustomConstraints(0, 4, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new CustomConstraints(0, 3, GridBagConstraints.EAST, GridBagConstraints.NONE));
         myJpanel.add(
                 submitButton,
-                new CustomConstraints(1, 4, GridBagConstraints.WEST, 0.5, 0.0, GridBagConstraints.NONE));
-
+                new CustomConstraints(1, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        //JButton deleteButton = new JButton("Delete");
+        myJpanel.add(
+                deleteButton,
+                new CustomConstraints(2, 3, GridBagConstraints.WEST, GridBagConstraints.NONE));
         add(myJpanel);
-    }
-
-    public UserStory getUserStoryObject() {
-        String name = nameField.getText();
-        String description = descArea.getText();
-        Double points = (Double) pointsCombo.getSelectedItem();
-        Double businessValue = (Double) businessValueCombo.getSelectedItem();
-
-        UserStoryFactory userStoryFactory = UserStoryFactory.getInstance();
-
-        UserStory userStory = userStoryFactory.createNewUserStory(name, description, points, businessValue);
-
-        userStory.doRegister();
-        System.out.println("NewUserStoryForm: Created user story with name: " + userStory.getName());
-
-        UserStoryStateManager.addUserStory(userStory.getName());
-
-        return userStory;
     }
 }

@@ -64,4 +64,17 @@ public class Sprint {
         }
         return header + USes;
     }
+
+    public Sprint(Sprint other) {
+        this.name = other.name;
+        this.description = other.description;
+        this.length = other.length;
+        this.remainingDays = other.remainingDays;
+        this.id = other.id;
+        this.userStories = new ArrayList<>();
+        for (UserStory us : other.userStories) {
+            this.userStories.add(new UserStory(us)); // Make sure UserStory has a copy constructor
+        }
+    }
+
 }

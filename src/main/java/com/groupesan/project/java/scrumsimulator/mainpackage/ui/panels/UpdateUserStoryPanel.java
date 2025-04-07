@@ -1,6 +1,8 @@
 package com.groupesan.project.java.scrumsimulator.mainpackage.ui.panels;
 
 import com.groupesan.project.java.scrumsimulator.mainpackage.state.UserStoryStateManager;
+
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -37,6 +39,12 @@ public class UpdateUserStoryPanel extends JFrame {
         panel.add(userStoryLabel);
 
         List<String> userStories = UserStoryStateManager.getUserStories();
+        System.out.println("UpdateUserStoryPanel: User stories from state manager: " + userStories);
+        
+        if (userStories == null || userStories.isEmpty()) {
+            userStories = new java.util.ArrayList<>();
+            userStories.add("No user stories available");
+        }
         JComboBox<String> userStoryComboBox = new JComboBox<>(userStories.toArray(new String[0]));
         userStoryComboBox.setBounds(150, 20, 200, 25);
         panel.add(userStoryComboBox);
@@ -51,26 +59,27 @@ public class UpdateUserStoryPanel extends JFrame {
         panel.add(statusComboBox);
 
         JButton updateButton = new JButton("Update Status");
-        updateButton.setBounds(150, 80, 150, 25);
-        panel.add(updateButton);
+        // updateButton.setBounds(150, 80, 150, 25);
+        // panel.add(updateButton);
 
-        updateButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String selectedUserStory = (String) userStoryComboBox.getSelectedItem();
-                        String selectedStatus = (String) statusComboBox.getSelectedItem();
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedUserStory = (String) userStoryComboBox.getSelectedItem();
+                String selectedStatus = (String) statusComboBox.getSelectedItem();
 
-                        if (selectedUserStory != null && selectedStatus != null) {
-                            UserStoryStateManager.updateUserStoryStatus(
-                                    selectedUserStory, selectedStatus);
-                            JOptionPane.showMessageDialog(null, "Status updated successfully!");
-                            dispose();
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                    null, "Please select a User Story and Status");
-                        }
-                    }
-                });
+                if (selectedUserStory != null && selectedStatus != null) {
+                    UserStoryStateManager.updateUserStoryStatus(selectedUserStory, selectedStatus);
+                    JOptionPane.showMessageDialog(null, "Status updated successfully!");
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please select a User Story and Status");
+                }
+            }
+        });
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(updateButton);
+        buttonPanel.setBounds(150, 80, 150, 35);
+        panel.add(buttonPanel);
     }
 }

@@ -41,5 +41,25 @@
             }
         ],
         "Name": "foo"
+    },
+    {
+        "Status": "New",
+        "Sprints": [],
+        "Events": [],
+        "NumberOfSprints": "1",
+        "ID": "66580b52-9cc9-441e-9a1d-077ef780ecd0",
+        "Users": [],
+        "SprintDuration": "5",
+        "Name": "New Simulation"
+    },
+    {
+        "Status": "New",
+        "Sprints": [],
+        "Events": [],
+        "NumberOfSprints": "1",
+        "ID": "ce685a3d-169c-410f-8c03-9d69430c5a24",
+        "Users": [],
+        "SprintDuration": "5",
+        "Name": "Example"
     }
 ]}

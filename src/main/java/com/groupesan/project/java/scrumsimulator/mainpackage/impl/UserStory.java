@@ -208,4 +208,25 @@ public class UserStory extends ScrumObject {
     public Player getOwner() {
         return this.owner;
     }
+
+    // New method to support getTitle() function for other parts of the application
+    /**
+     * Gets the title of the UserStory, which is essentially its name.
+     *
+     * @return the title of the UserStory
+     */
+    public String getTitle() {
+        return this.name;
+    }
+
+    public UserStory(UserStory other) {
+        this.name = other.name;
+        this.description = other.description;
+        this.pointValue = other.pointValue;
+        this.businessValue = other.businessValue;
+        this.state = new UserStoryUnselectedState(this); // Defaulting to unselected
+        this.owner = other.owner; // shallow copy – adjust if needed
+        // ID is not copied since it's meant to be unique; copy constructor creates a new instance
+    }
+
 }
